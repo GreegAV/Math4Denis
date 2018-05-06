@@ -1,10 +1,11 @@
 import java.io.FileWriter;
-import java.io.IOException;
+import java.util.Calendar;
 import java.util.Scanner;
 
 public class Runner {
     private static String resTask;
     private static int resultOfTask;
+    private static long startWork = 0, endWork = 0;
 
     public static void main(String[] args) {
         int numTasks = 0;
@@ -15,17 +16,17 @@ public class Runner {
 
         try (FileWriter fileWriter = new FileWriter("results.txt", true)) {
             do {
+                startWork = System.currentTimeMillis();
                 System.out.println("Введите количество примеров (1-12).");
                 System.out.print("Для выхода ввести 0. ");
                 try {
                     numTasks = Integer.parseInt(scanner.nextLine());
-                }
-                catch (Exception ex){
+                } catch (Exception ex) {
                     System.out.println("Допустим ввод только цифр! Запустите программу еще раз.");
                     continue;
                 }
                 if ((numTasks < 1) || (numTasks > 12)) continue;
-
+                fileWriter.write("" + Calendar.getInstance().getTime());
                 fileWriter.write("Блок из " + numTasks + " примеров.\n\r");
                 totalRight = 0;
                 totalWrong = 0;
@@ -58,8 +59,10 @@ public class Runner {
                         totalWrong++;
                     }
                 }
+                endWork = System.currentTimeMillis();
                 String results = summaryResults(numTasks, totalRight, totalWrong);
                 System.out.println(results);
+
                 fileWriter.write(results);
                 fileWriter.flush();
             } while (numTasks > 0);
@@ -83,8 +86,6 @@ public class Runner {
             int randomC = (int) (Math.random() * 10);
             int randomA = (int) (Math.random() * 100);
             int randomD = (int) (Math.random() * 100);
-//            int randomA = (randSign1 == 1) ? (int) (Math.random() * 100) : (int) (50 + Math.random() * randomB * randomC);
-//            int randomD = (int) (Math.abs(Math.random() * (randomA - randomB * randomC)));
             if (randSign1 == 1) {
                 resultOfTask = randomA + randomB * randomC;
                 resTask += randomA + "+" + randomB + "*" + randomC;
@@ -187,15 +188,17 @@ public class Runner {
     private static String summaryResults(int numTasks, int totalRight, int totalWrong) {
         String res = "\n\rИтого:\n\r";
         res += "Правильных ответов: ";
-        res += totalRight;
-        res += "\n\r";
+        res += totalRight + "\n\r";
         res += "Неправильных ответов: ";
-        res += totalWrong;
-        res += "\n\r";
+        res += totalWrong + "\n\r";
         int resultTotal = (int) Math.ceil((12 * totalRight / numTasks));
         res += "Оценка: ";
         res += resultTotal;
         res += "\n\r";
+        res += "Затрачено времени: ";
+        int spentTime = (int) (endWork - startWork);
+//        res+=spentTime+"ms, ";
+        res += spentTime / 60000 + " минут " + spentTime / 1000 + " секунд.";
         return res;
     }
 }
