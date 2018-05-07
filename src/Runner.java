@@ -198,7 +198,7 @@ public class Runner {
         res += "Затрачено времени: ";
         int spentTime = (int) (endWork - startWork);
 //        res+=spentTime+"ms, ";
-        res += spentTime / 60000 + " минут " + spentTime / 1000 + " секунд.";
+        res += spentTime / 60000 + " минут " + (spentTime%60000) / 1000 + " секунд.";
         return res;
     }
 }
